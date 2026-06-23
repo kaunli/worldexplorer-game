@@ -1,0 +1,509 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+#wke { font-family: system-ui, sans-serif; background: #0d1117; color: #e6edf3; min-height: 600px; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; }
+#hdr { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #161b22; border-bottom: 1px solid #30363d; flex-wrap: wrap; gap: 8px; }
+#logo { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+#modes { display: flex; gap: 6px; }
+.mbtn { padding: 5px 12px; border-radius: 20px; border: 1px solid #30363d; background: transparent; color: #7d8590; font-size: 12px; cursor: pointer; }
+.mbtn.on { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+#xprow { display: flex; align-items: center; gap: 10px; padding: 6px 16px; background: #0d1117; border-bottom: 1px solid #21262d; font-size: 12px; color: #7d8590; }
+#xpbar-wrap { flex: 1; height: 5px; background: #21262d; border-radius: 3px; overflow: hidden; }
+#xpbar { height: 100%; background: #1D9E75; border-radius: 3px; transition: width 0.3s; }
+.pill { padding: 2px 8px; background: #161b22; border: 1px solid #30363d; border-radius: 10px; font-size: 11px; white-space: nowrap; }
+.pill span { color: #e6edf3; font-weight: 600; }
+#body { display: flex; flex: 1; min-height: 0; }
+#grid-panel { flex: 1; padding: 14px; overflow-y: auto; }
+#grid-panel::-webkit-scrollbar { width: 4px; }
+#grid-panel::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+#search { width: 100%; background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 8px 12px; color: #e6edf3; font-size: 13px; margin-bottom: 10px; outline: none; }
+#search:focus { border-color: #1D9E75; }
+#search::placeholder { color: #484f58; }
+#region-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.rtab { padding: 3px 10px; border-radius: 20px; border: 1px solid #30363d; background: transparent; color: #7d8590; font-size: 11px; cursor: pointer; }
+.rtab.on { background: #21262d; color: #e6edf3; border-color: #555; }
+#clist { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.ccard { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 12px 10px; cursor: pointer; text-align: center; transition: border-color 0.15s, transform 0.1s; }
+.ccard:hover { border-color: #1D9E75; transform: translateY(-1px); }
+.ccard.mastered { border-color: #1D9E75; background: #0f2a20; }
+.ccard-flag { font-size: 28px; margin-bottom: 6px; }
+.ccard-name { font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+.mbar-wrap { height: 4px; background: #21262d; border-radius: 2px; overflow: hidden; }
+.mbar { height: 100%; background: #1D9E75; border-radius: 2px; transition: width 0.3s; }
+.ccard-region { font-size: 10px; color: #484f58; margin-top: 4px; }
+#right { width: 280px; border-left: 1px solid #21262d; background: #0d1117; display: flex; flex-direction: column; flex-shrink: 0; }
+#right-inner { flex: 1; overflow-y: auto; padding: 14px; }
+#right-inner::-webkit-scrollbar { width: 4px; }
+#right-inner::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+#welcome { text-align: center; padding: 30px 16px; }
+#welcome-emoji { font-size: 40px; margin-bottom: 12px; }
+#welcome h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+#welcome p { font-size: 12px; color: #7d8590; line-height: 1.6; margin-bottom: 14px; }
+.how-step { display: flex; align-items: flex-start; gap: 8px; text-align: left; margin-bottom: 8px; background: #161b22; border-radius: 8px; padding: 8px 10px; }
+.how-num { width: 20px; height: 20px; border-radius: 50%; background: #1D9E75; color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.how-txt { font-size: 11px; color: #7d8590; line-height: 1.5; }
+.how-txt strong { color: #e6edf3; }
+#dq-btn { width: 100%; margin-bottom: 12px; padding: 12px; background: linear-gradient(135deg, #1a3a20, #0f2030); border: 1px solid #1D9E75; border-radius: 10px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; }
+#dq-btn:hover { background: linear-gradient(135deg, #1f4a28, #142840); }
+.dq-icon { font-size: 24px; }
+.dq-title { font-size: 13px; font-weight: 600; color: #1D9E75; }
+.dq-sub { font-size: 11px; color: #7d8590; margin-top: 2px; }
+#detail { display: none; }
+#detail.on { display: block; }
+#det-flag { font-size: 44px; text-align: center; margin-bottom: 8px; }
+#det-name { font-size: 17px; font-weight: 700; text-align: center; margin-bottom: 2px; }
+#det-region { font-size: 11px; color: #1D9E75; text-align: center; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+.fact-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.fact-box { flex: 1; background: #161b22; border-radius: 8px; padding: 8px 10px; border: 1px solid #21262d; }
+.fact-lbl { font-size: 10px; color: #484f58; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+.fact-v { font-size: 12px; font-weight: 500; }
+#det-mastery { margin: 12px 0; }
+.mast-row { display: flex; justify-content: space-between; font-size: 11px; color: #7d8590; margin-bottom: 5px; }
+.mast-track { height: 6px; background: #21262d; border-radius: 3px; overflow: hidden; }
+.mast-fill { height: 100%; background: linear-gradient(90deg, #1D9E75, #378ADD); border-radius: 3px; transition: width 0.4s; }
+.det-fact { font-size: 12px; color: #7d8590; line-height: 1.6; background: #161b22; border-radius: 8px; padding: 10px; border: 1px solid #21262d; margin-bottom: 12px; }
+.abtn { width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.abtn-g { background: #1D9E75; color: #fff; }
+.abtn-g:hover { background: #18876a; }
+.abtn-s { background: #161b22; color: #e6edf3; border: 1px solid #30363d; }
+.abtn-s:hover { background: #1c2128; border-color: #555; }
+#quiz { display: none; }
+#quiz.on { display: block; }
+#q-which { font-size: 11px; color: #1D9E75; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+#q-num { font-size: 11px; color: #484f58; margin-bottom: 10px; }
+#q-text { font-size: 14px; font-weight: 600; line-height: 1.4; margin-bottom: 16px; }
+.qopt { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #30363d; background: #161b22; color: #e6edf3; font-size: 13px; cursor: pointer; margin-bottom: 7px; text-align: left; transition: border-color 0.15s; }
+.qopt:hover:not(:disabled) { border-color: #378ADD; }
+.qopt.right { border-color: #1D9E75 !important; background: rgba(29,158,117,0.15); color: #1D9E75; }
+.qopt.wrong { border-color: #E24B4A !important; background: rgba(226,75,74,0.12); color: #E24B4A; }
+#q-feed { font-size: 12px; color: #7d8590; margin: 10px 0; line-height: 1.5; min-height: 18px; }
+#q-btns { display: flex; gap: 8px; }
+#q-btns button { flex: 1; }
+#toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #1D9E75; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+
+<div id="wke">
+  <div id="hdr">
+    <div id="logo">🌍 World Knowledge Explorer</div>
+    <div id="modes">
+      <button class="mbtn on" onclick="setMode('explore')">🧭 Explore</button>
+      <button class="mbtn" onclick="setMode('challenge')">🎯 Challenge</button>
+      <button class="mbtn" onclick="setMode('learn')">📖 Learn</button>
+      <button class="mbtn" onclick="startDaily()">⭐ Daily Quest</button>
+    </div>
+  </div>
+  <div id="xprow">
+    <div class="pill">⚡ XP: <span id="xp-val">0</span></div>
+    <div id="xpbar-wrap"><div id="xpbar" style="width:0%"></div></div>
+    <div class="pill">Level <span id="lvl-val">1</span></div>
+    <div class="pill">🔥 Streak: <span id="streak-val">0</span></div>
+    <div class="pill">🌐 <span id="exp-val">0</span>/20 countries</div>
+  </div>
+  <div id="body">
+    <div id="grid-panel">
+      <input id="search" type="text" placeholder="Search countries..." oninput="renderList()">
+      <div id="region-tabs">
+        <button class="rtab on" onclick="setRegion(this,'all')">All</button>
+        <button class="rtab" onclick="setRegion(this,'Europe')">🌍 Europe</button>
+        <button class="rtab" onclick="setRegion(this,'Asia')">🌏 Asia</button>
+        <button class="rtab" onclick="setRegion(this,'Americas')">🌎 Americas</button>
+        <button class="rtab" onclick="setRegion(this,'Africa')">🌍 Africa</button>
+        <button class="rtab" onclick="setRegion(this,'Oceania')">🌊 Oceania</button>
+      </div>
+      <div id="clist"></div>
+    </div>
+    <div id="right">
+      <div id="right-inner">
+        <button id="dq-btn" onclick="startDaily()">
+          <div class="dq-icon">⭐</div>
+          <div><div class="dq-title">Daily Quest</div><div class="dq-sub">Answer 5 questions · Earn bonus XP</div></div>
+        </button>
+        <div id="welcome">
+          <div id="welcome-emoji">🗺️</div>
+          <h3>How to Play</h3>
+          <p>Click any country card to start exploring and earning XP.</p>
+          <div class="how-step"><div class="how-num">1</div><div class="how-txt"><strong>Pick a country</strong> from the grid — search or filter by region</div></div>
+          <div class="how-step"><div class="how-num">2</div><div class="how-txt"><strong>Read the facts</strong> in Learn mode, or jump straight to trivia</div></div>
+          <div class="how-step"><div class="how-num">3</div><div class="how-txt"><strong>Answer trivia</strong> to raise that country's mastery bar and earn XP</div></div>
+          <div class="how-step"><div class="how-num">4</div><div class="how-txt"><strong>Build your streak</strong> — correct answers in a row multiply your points</div></div>
+          <div class="how-step"><div class="how-num">5</div><div class="how-txt"><strong>Hit 100% mastery</strong> on a country to mark it as mastered (green card)</div></div>
+        </div>
+        <div id="detail">
+          <div id="det-flag"></div>
+          <div id="det-name"></div>
+          <div id="det-region"></div>
+          <div class="fact-row">
+            <div class="fact-box"><div class="fact-lbl">Capital</div><div class="fact-v" id="det-cap"></div></div>
+            <div class="fact-box"><div class="fact-lbl">Population</div><div class="fact-v" id="det-pop"></div></div>
+          </div>
+          <div class="fact-row">
+            <div class="fact-box"><div class="fact-lbl">Language</div><div class="fact-v" id="det-lang"></div></div>
+            <div class="fact-box"><div class="fact-lbl">Currency</div><div class="fact-v" id="det-cur"></div></div>
+          </div>
+          <div id="det-mastery">
+            <div class="mast-row"><span>Mastery</span><span id="det-mpct">0%</span></div>
+            <div class="mast-track"><div class="mast-fill" id="det-mbar" style="width:0%"></div></div>
+          </div>
+          <div class="det-fact" id="det-fact-text"></div>
+          <button class="abtn abtn-g" onclick="startQuiz()">🎯 Start Trivia Challenge</button>
+          <button class="abtn abtn-s" onclick="goBack()">← Back to countries</button>
+        </div>
+        <div id="quiz">
+          <div id="q-which"></div>
+          <div id="q-num"></div>
+          <div id="q-text"></div>
+          <div id="q-opts"></div>
+          <div id="q-feed"></div>
+          <div id="q-btns">
+            <button class="abtn abtn-s" style="margin:0" onclick="backToDetail()">← Back</button>
+            <button class="abtn abtn-g" style="margin:0;display:none" id="nxt-btn" onclick="nextQ()">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const DATA = [
+  { id:'FR', name:'France', flag:'🇫🇷', region:'Europe', capital:'Paris', pop:'68M', lang:'French', cur:'Euro',
+    fact:'France is the most visited country in the world, welcoming over 89 million tourists a year. It is home to the Louvre, the world\'s largest art museum.',
+    trivia:[
+      {q:'What famous iron tower stands in Paris?',opts:['Eiffel Tower','Big Ben','Colosseum','Sagrada Família'],a:'Eiffel Tower',f:'The Eiffel Tower was built in 1889 for the World\'s Fair and stands 330 m tall.'},
+      {q:'France is known for which type of bread?',opts:['Baguette','Ciabatta','Naan','Pretzel'],a:'Baguette',f:'The baguette is protected under French law as a cultural heritage item.'},
+      {q:'What is the French national motto?',opts:['Liberté, Égalité, Fraternité','Dieu et mon Droit','In Varietate Concordia','Unity is Strength'],a:'Liberté, Égalité, Fraternité',f:'This motto dates back to the French Revolution.'}
+    ]},
+  { id:'JP', name:'Japan', flag:'🇯🇵', region:'Asia', capital:'Tokyo', pop:'125M', lang:'Japanese', cur:'Yen',
+    fact:'Japan is an archipelago of 6,852 islands. It is the birthplace of sushi, anime, and the Shinkansen bullet train which travels at up to 320 km/h.',
+    trivia:[
+      {q:'What is Japan\'s iconic snow-capped volcano?',opts:['Mount Fuji','Mount Olympus','Vesuvius','Kilimanjaro'],a:'Mount Fuji',f:'Mount Fuji is Japan\'s highest peak at 3,776 m and is an active stratovolcano.'},
+      {q:'What is the Japanese art of paper folding called?',opts:['Origami','Ikebana','Bonsai','Kintsugi'],a:'Origami',f:'Origami has been practiced in Japan since the 17th century.'},
+      {q:'Japan is made up of approximately how many islands?',opts:['6,852','100','500','1,000'],a:'6,852',f:'Japan consists of 6,852 islands in total across the Pacific.'}
+    ]},
+  { id:'BR', name:'Brazil', flag:'🇧🇷', region:'Americas', capital:'Brasília', pop:'215M', lang:'Portuguese', cur:'Real',
+    fact:'Brazil contains about 60% of the Amazon rainforest, the world\'s largest tropical forest. It is the only Portuguese-speaking country in South America.',
+    trivia:[
+      {q:'What percentage of the Amazon rainforest lies in Brazil?',opts:['60%','30%','90%','45%'],a:'60%',f:'Brazil holds roughly 60% of the Amazon, making it critical for global climate.'},
+      {q:'What is the largest city in Brazil?',opts:['São Paulo','Rio de Janeiro','Brasília','Salvador'],a:'São Paulo',f:'São Paulo is the most populous city in South America with over 12 million people.'},
+      {q:'Brazil has won the FIFA World Cup how many times?',opts:['5','3','4','6'],a:'5',f:'Brazil is the most successful World Cup team with 5 titles.'}
+    ]},
+  { id:'NG', name:'Nigeria', flag:'🇳🇬', region:'Africa', capital:'Abuja', pop:'220M', lang:'English', cur:'Naira',
+    fact:'Nigeria is the most populous country in Africa and has the continent\'s largest economy. It is home to over 500 distinct ethnic groups and languages.',
+    trivia:[
+      {q:'Nigeria is the most populous country on which continent?',opts:['Africa','Asia','South America','Europe'],a:'Africa',f:'Nigeria has over 220 million people, making it Africa\'s most populous nation.'},
+      {q:'What is the largest city in Nigeria?',opts:['Lagos','Abuja','Kano','Ibadan'],a:'Lagos',f:'Lagos is one of Africa\'s fastest-growing megacities and a major economic hub.'},
+      {q:'Nigeria is the biggest exporter of what on the African continent?',opts:['Oil','Gold','Diamonds','Coffee'],a:'Oil',f:'Nigeria is Africa\'s top crude oil producer.'}
+    ]},
+  { id:'AU', name:'Australia', flag:'🇦🇺', region:'Oceania', capital:'Canberra', pop:'26M', lang:'English', cur:'AUD',
+    fact:'Australia is the only country that is also a continent. It has more species of venomous snakes than any other country and is home to the Great Barrier Reef.',
+    trivia:[
+      {q:'What famous reef lies off Australia\'s northeast coast?',opts:['Great Barrier Reef','Ningaloo Reef','Coral Triangle','Florida Keys'],a:'Great Barrier Reef',f:'The Great Barrier Reef is the world\'s largest coral reef system, visible from space.'},
+      {q:'Australia\'s largest city is?',opts:['Sydney','Melbourne','Brisbane','Canberra'],a:'Sydney',f:'Sydney has over 5 million people, though Canberra is the capital.'},
+      {q:'Which animals appear on Australia\'s coat of arms?',opts:['Kangaroo & Emu','Kangaroo & Koala','Emu & Platypus','Koala & Wombat'],a:'Kangaroo & Emu',f:'Both were chosen because neither animal can walk backwards — symbolising progress.'}
+    ]},
+  { id:'DE', name:'Germany', flag:'🇩🇪', region:'Europe', capital:'Berlin', pop:'84M', lang:'German', cur:'Euro',
+    fact:'Germany is the most populous EU member state and the world\'s fourth-largest economy. It invented the car, aspirin, and the Christmas tree tradition.',
+    trivia:[
+      {q:'Germany invented which car brand whose name means "People\'s Car"?',opts:['Volkswagen','BMW','Audi','Mercedes'],a:'Volkswagen',f:'Volkswagen literally translates to "people\'s car" in German, launched in 1938.'},
+      {q:'The Berlin Wall fell in which year?',opts:['1989','1991','1985','1993'],a:'1989',f:'The wall fell on November 9, 1989, reunifying East and West Germany.'},
+      {q:'Germany is famous for which annual beer festival?',opts:['Oktoberfest','Sommerfest','Bierfest','Volksfest'],a:'Oktoberfest',f:'Oktoberfest draws over 6 million visitors to Munich each year.'}
+    ]},
+  { id:'IN', name:'India', flag:'🇮🇳', region:'Asia', capital:'New Delhi', pop:'1.4B', lang:'Hindi', cur:'Rupee',
+    fact:'India is the world\'s most populous country and the largest democracy. It invented the number zero, chess, and the game of Snakes and Ladders.',
+    trivia:[
+      {q:'The Taj Mahal is located in which Indian city?',opts:['Agra','Delhi','Mumbai','Jaipur'],a:'Agra',f:'The Taj Mahal was built by Emperor Shah Jahan in 1632 as a mausoleum for his wife.'},
+      {q:'India gained independence from which country in 1947?',opts:['Britain','France','Portugal','Netherlands'],a:'Britain',f:'India\'s independence was achieved on August 15, 1947, led by Gandhi and Nehru.'},
+      {q:'Which river is considered most sacred in Hinduism?',opts:['Ganges','Yamuna','Indus','Brahmaputra'],a:'Ganges',f:'The Ganges is revered by over a billion Hindus and flows through northern India.'}
+    ]},
+  { id:'EG', name:'Egypt', flag:'🇪🇬', region:'Africa', capital:'Cairo', pop:'104M', lang:'Arabic', cur:'Pound',
+    fact:'Egypt is home to the oldest Wonder of the Ancient World — the Great Pyramid of Giza, built around 2560 BCE. The Nile at 6,650 km is the world\'s longest river.',
+    trivia:[
+      {q:'The Great Pyramid of Giza was built for which Pharaoh?',opts:['Khufu','Ramesses II','Tutankhamun','Cleopatra'],a:'Khufu',f:'The Great Pyramid of Khufu is the only surviving Wonder of the Ancient World.'},
+      {q:'The Nile River flows into which sea?',opts:['Mediterranean','Red Sea','Black Sea','Arabian Sea'],a:'Mediterranean',f:'The Nile delta empties into the Mediterranean Sea in northern Egypt.'},
+      {q:'What ancient Egyptian writing system uses picture symbols?',opts:['Hieroglyphics','Cuneiform','Latin','Aramaic'],a:'Hieroglyphics',f:'Hieroglyphics were used for over 3,500 years in ancient Egypt.'}
+    ]},
+  { id:'MX', name:'Mexico', flag:'🇲🇽', region:'Americas', capital:'Mexico City', pop:'130M', lang:'Spanish', cur:'Peso',
+    fact:'Mexico is home to ancient Aztec and Mayan civilisations. It is the world\'s largest producer of avocados and the birthplace of chocolate.',
+    trivia:[
+      {q:'What was the ancient Aztec capital, now Mexico City?',opts:['Tenochtitlán','Chichen Itza','Palenque','Tulum'],a:'Tenochtitlán',f:'Tenochtitlán was founded around 1325 CE on an island in Lake Texcoco.'},
+      {q:'Mexico is the world\'s largest producer of which fruit?',opts:['Avocado','Mango','Papaya','Guava'],a:'Avocado',f:'Mexico produces about 30% of the world\'s avocados, mainly from Michoacán.'},
+      {q:'Día de los Muertos is celebrated on which dates?',opts:['Nov 1–2','Oct 31','Dec 12','Sep 16'],a:'Nov 1–2',f:'Día de los Muertos honours ancestors each November 1–2, a UNESCO heritage tradition.'}
+    ]},
+  { id:'CN', name:'China', flag:'🇨🇳', region:'Asia', capital:'Beijing', pop:'1.4B', lang:'Mandarin', cur:'Yuan',
+    fact:'China is the world\'s oldest continuous civilisation, with over 5,000 years of recorded history. It invented paper, printing, gunpowder, and the compass.',
+    trivia:[
+      {q:'How many km does the Great Wall of China span (total)?',opts:['21,000 km','5,000 km','1,000 km','13,000 km'],a:'21,000 km',f:'Including all branches, the Great Wall stretches over 21,000 km.'},
+      {q:'Which river is the longest in China?',opts:['Yangtze','Yellow River','Pearl River','Mekong'],a:'Yangtze',f:'The Yangtze at 6,300 km is the third longest river in the world.'},
+      {q:'China invented which ancient writing material still used today?',opts:['Paper','Papyrus','Parchment','Vellum'],a:'Paper',f:'Paper was invented in China around 105 CE by Cai Lun.'}
+    ]},
+  { id:'IT', name:'Italy', flag:'🇮🇹', region:'Europe', capital:'Rome', pop:'60M', lang:'Italian', cur:'Euro',
+    fact:'Italy has the most UNESCO World Heritage Sites of any country — 58 in total. It is the birthplace of the Renaissance, pizza, and the Roman Empire.',
+    trivia:[
+      {q:'Who painted the Sistine Chapel ceiling?',opts:['Michelangelo','Leonardo da Vinci','Raphael','Botticelli'],a:'Michelangelo',f:'Michelangelo painted the Sistine Chapel between 1508 and 1512.'},
+      {q:'Which Italian city is built on canals?',opts:['Venice','Florence','Milan','Naples'],a:'Venice',f:'Venice has about 150 canals and 400 bridges, built on 118 small islands.'},
+      {q:'Italy leads the world in how many UNESCO Heritage Sites?',opts:['58','40','72','33'],a:'58',f:'Italy has 58 UNESCO World Heritage Sites, more than any other country.'}
+    ]},
+  { id:'ZA', name:'S. Africa', flag:'🇿🇦', region:'Africa', capital:'Pretoria', pop:'60M', lang:'11 languages', cur:'Rand',
+    fact:'South Africa has 11 official languages — the most of any country. It is the only African country to have developed nuclear weapons (and then dismantled them).',
+    trivia:[
+      {q:'South Africa has how many official capitals?',opts:['3','1','2','4'],a:'3',f:'Pretoria (executive), Cape Town (legislative), Bloemfontein (judicial).'},
+      {q:'Who was South Africa\'s first post-apartheid president?',opts:['Nelson Mandela','Thabo Mbeki','F.W. de Klerk','Cyril Ramaphosa'],a:'Nelson Mandela',f:'Mandela became president in 1994 after spending 27 years in prison.'},
+      {q:'Which two oceans border South Africa?',opts:['Atlantic & Indian','Pacific & Atlantic','Indian & Pacific','Red & Atlantic'],a:'Atlantic & Indian',f:'South Africa sits at the meeting point of the Atlantic and Indian Oceans.'}
+    ]},
+  { id:'CA', name:'Canada', flag:'🇨🇦', region:'Americas', capital:'Ottawa', pop:'38M', lang:'English/French', cur:'CAD',
+    fact:'Canada is the second-largest country in the world by area. It has the longest coastline of any country — over 202,000 km — and invented basketball and insulin.',
+    trivia:[
+      {q:'Canada is the world\'s second largest country by what?',opts:['Total area','Population','GDP','Coastline'],a:'Total area',f:'Canada covers 9.98 million km², second only to Russia.'},
+      {q:'Which Canadian city is the most populous?',opts:['Toronto','Montreal','Vancouver','Ottawa'],a:'Toronto',f:'Toronto has over 2.7 million people and is Canada\'s financial hub.'},
+      {q:'Canada has two official languages. What are they?',opts:['English & French','English & Spanish','French & Dutch','English & Inuit'],a:'English & French',f:'Both English and French have been official languages since 1969.'}
+    ]},
+  { id:'GB', name:'UK', flag:'🇬🇧', region:'Europe', capital:'London', pop:'67M', lang:'English', cur:'Pound',
+    fact:'The United Kingdom once controlled the largest empire in history, covering about 24% of the Earth\'s surface. It gave the world Shakespeare, the Internet, and football.',
+    trivia:[
+      {q:'What is the world\'s oldest underground railway, located in London?',opts:['The Tube','Metro','Subway','S-Bahn'],a:'The Tube',f:'London\'s Underground (the Tube) opened in 1863, making it the oldest in the world.'},
+      {q:'Which Scottish inventor is credited with the telephone?',opts:['Alexander Graham Bell','James Watt','John Logie Baird','Alan Turing'],a:'Alexander Graham Bell',f:'Bell patented the telephone in 1876.'},
+      {q:'What is the name of Britain\'s royal residence in London?',opts:['Buckingham Palace','Windsor Castle','Kensington Palace','Hampton Court'],a:'Buckingham Palace',f:'Buckingham Palace has been the official London residence of the monarch since 1837.'}
+    ]},
+  { id:'AR', name:'Argentina', flag:'🇦🇷', region:'Americas', capital:'Buenos Aires', pop:'46M', lang:'Spanish', cur:'Peso',
+    fact:'Argentina is the eighth-largest country in the world and home to Patagonia, the largest desert outside of Asia. It is the birthplace of the tango and Lionel Messi.',
+    trivia:[
+      {q:'Argentina won the FIFA World Cup in 2022. Who was their captain?',opts:['Lionel Messi','Diego Maradona','Sergio Agüero','Ángel Di María'],a:'Lionel Messi',f:'Messi finally won the World Cup in Qatar 2022, completing his legendary career.'},
+      {q:'What dance originated in Argentina?',opts:['Tango','Salsa','Samba','Merengue'],a:'Tango',f:'The tango originated in Buenos Aires in the late 19th century.'},
+      {q:'What is the world\'s widest avenue, located in Buenos Aires?',opts:['Avenida 9 de Julio','Champs-Élysées','Las Ramblas','Nevsky Prospekt'],a:'Avenida 9 de Julio',f:'Avenida 9 de Julio is up to 140 m wide with 16 lanes of traffic.'}
+    ]},
+  { id:'GR', name:'Greece', flag:'🇬🇷', region:'Europe', capital:'Athens', pop:'10M', lang:'Greek', cur:'Euro',
+    fact:'Greece is the birthplace of democracy, the Olympic Games, philosophy, and Western theatre. It has over 6,000 islands, of which about 227 are inhabited.',
+    trivia:[
+      {q:'The first ancient Olympic Games were held in which Greek city?',opts:['Olympia','Athens','Sparta','Corinth'],a:'Olympia',f:'The ancient Olympics began in Olympia in 776 BCE and were held every four years.'},
+      {q:'The Parthenon sits atop which ancient citadel in Athens?',opts:['The Acropolis','The Agora','The Colosseum','The Pantheon'],a:'The Acropolis',f:'The Acropolis of Athens is the most famous symbol of ancient Greece.'},
+      {q:'Which ancient Greek thinker was the teacher of Alexander the Great?',opts:['Aristotle','Plato','Socrates','Pythagoras'],a:'Aristotle',f:'Aristotle tutored Alexander the Great from age 13.'}
+    ]},
+  { id:'KR', name:'S. Korea', flag:'🇰🇷', region:'Asia', capital:'Seoul', pop:'52M', lang:'Korean', cur:'Won',
+    fact:'South Korea transformed from one of the world\'s poorest countries to a high-tech powerhouse in just 50 years — known as the "Miracle on the Han River".',
+    trivia:[
+      {q:'South Korea\'s economic boom is nicknamed what?',opts:['Miracle on the Han River','Tiger Economy','Silicon Valley East','Tech Surge'],a:'Miracle on the Han River',f:'The rapid growth from the 1960s–90s is called the Miracle on the Han River.'},
+      {q:'Which Korean pop music genre exploded globally in the 2010s?',opts:['K-Pop','J-Pop','C-Pop','Indo-Pop'],a:'K-Pop',f:'K-Pop groups like BTS became a global phenomenon worth billions in cultural exports.'},
+      {q:'Samsung, headquartered in South Korea, is primarily known for?',opts:['Electronics','Cars','Fashion','Food'],a:'Electronics',f:'Samsung is the world\'s largest manufacturer of smartphones and memory chips.'}
+    ]},
+  { id:'RU', name:'Russia', flag:'🇷🇺', region:'Europe', capital:'Moscow', pop:'144M', lang:'Russian', cur:'Ruble',
+    fact:'Russia is the largest country on Earth, spanning 11 time zones and two continents. Lake Baikal in Siberia contains 20% of the world\'s unfrozen fresh water.',
+    trivia:[
+      {q:'Russia spans how many time zones?',opts:['11','8','14','6'],a:'11',f:'Russia\'s 11 time zones stretch from UTC+2 to UTC+12.'},
+      {q:'What is the name of the famous square in central Moscow?',opts:['Red Square','Palace Square','Revolution Square','Victory Square'],a:'Red Square',f:'Red Square houses the Kremlin, Lenin\'s Mausoleum, and St Basil\'s Cathedral.'},
+      {q:'Russia launched the world\'s first artificial satellite in 1957. What was it called?',opts:['Sputnik','Vostok','Mir','Cosmos'],a:'Sputnik',f:'Sputnik 1 was launched on October 4, 1957, starting the Space Age.'}
+    ]},
+  { id:'SA', name:'Saudi Arabia', flag:'🇸🇦', region:'Asia', capital:'Riyadh', pop:'35M', lang:'Arabic', cur:'Riyal',
+    fact:'Saudi Arabia is home to Mecca and Medina, the two holiest cities in Islam. It holds about 17% of the world\'s proven petroleum reserves.',
+    trivia:[
+      {q:'Which two cities in Saudi Arabia are the holiest in Islam?',opts:['Mecca & Medina','Riyadh & Jeddah','Mecca & Riyadh','Medina & Jeddah'],a:'Mecca & Medina',f:'Mecca and Medina are visited by millions of pilgrims each year.'},
+      {q:'Saudi Arabia is the world\'s largest exporter of what?',opts:['Crude oil','Natural gas','Gold','Dates'],a:'Crude oil',f:'Saudi Arabia exports more crude oil than any other country in the world.'},
+      {q:'What is the name of Saudi Arabia\'s planned futuristic city?',opts:['NEOM','Riyadh 2.0','Vision City','AlUla'],a:'NEOM',f:'NEOM is a planned $500B futuristic smart city being built in northwest Saudi Arabia.'}
+    ]},
+  { id:'PT', name:'Portugal', flag:'🇵🇹', region:'Europe', capital:'Lisbon', pop:'10M', lang:'Portuguese', cur:'Euro',
+    fact:'Portugal is the oldest nation-state in Europe, with borders largely unchanged since 1139. Portuguese is the 6th most spoken language, with 260 million speakers worldwide.',
+    trivia:[
+      {q:'What is Portugal famous for producing?',opts:['Port wine','Champagne','Whisky','Vodka'],a:'Port wine',f:'Port wine from the Douro Valley is a protected designation of origin product.'},
+      {q:'Which Portuguese explorer first sailed around Africa to India?',opts:['Vasco da Gama','Ferdinand Magellan','Bartolomeu Dias','Pedro Cabral'],a:'Vasco da Gama',f:'Vasco da Gama reached India in 1498, opening a sea route to the East.'},
+      {q:'Portugal\'s famous sad music genre is called?',opts:['Fado','Flamenco','Bossa Nova','Morabeza'],a:'Fado',f:'Fado is a UNESCO Intangible Cultural Heritage, known for the feeling of "saudade".'}
+    ]}
+];
+
+// Key change: answers are stored as the correct text string, not an index.
+// shuffle() randomizes the options array each time a question is shown,
+// then we find the correct answer by matching the string — position is always random.
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let S = {
+  xp: 0, streak: 0, explored: new Set(),
+  mastery: {}, mode: 'explore', region: 'all',
+  selected: null, qIdx: 0, qAnswered: false, quizCountry: null
+};
+DATA.forEach(c => S.mastery[c.id] = 0);
+
+function $(id){ return document.getElementById(id); }
+
+function setMode(m){
+  S.mode = m;
+  document.querySelectorAll('.mbtn').forEach(b => b.classList.remove('on'));
+  event.target.classList.add('on');
+  showWelcome();
+  renderList();
+  const msgs = {explore:'🧭 Explore Mode — click a country to view facts + trivia', challenge:'🎯 Challenge Mode — trivia starts immediately when you pick a country', learn:'📖 Learn Mode — read fascinating facts before starting trivia'};
+  toast(msgs[m]);
+}
+
+function setRegion(el, r){
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  S.region = r;
+  renderList();
+}
+
+function renderList(){
+  const q = $('search').value.toLowerCase();
+  const r = S.region;
+  const filtered = DATA.filter(c => (r==='all' || c.region===r) && (!q || c.name.toLowerCase().includes(q)));
+  const list = $('clist');
+  list.innerHTML = '';
+  filtered.forEach(c => {
+    const m = S.mastery[c.id];
+    const div = document.createElement('div');
+    div.className = 'ccard' + (m >= 100 ? ' mastered' : '');
+    div.innerHTML = `<div class="ccard-flag">${c.flag}</div><div class="ccard-name">${c.name}</div><div class="mbar-wrap"><div class="mbar" style="width:${m}%"></div></div><div class="ccard-region">${c.region} · ${m}% mastered</div>`;
+    div.onclick = () => selectCountry(c.id);
+    list.appendChild(div);
+  });
+}
+
+function selectCountry(id){
+  const c = DATA.find(x => x.id === id);
+  if (!c) return;
+  S.selected = id;
+  S.explored.add(id);
+  updateStats();
+  if (S.mode === 'challenge') {
+    showDetail(c);
+    setTimeout(startQuiz, 100);
+  } else {
+    showDetail(c);
+  }
+}
+
+function showDetail(c){
+  $('welcome').style.display = 'none';
+  $('quiz').classList.remove('on');
+  $('detail').style.display = 'block';
+  $('det-flag').textContent = c.flag;
+  $('det-name').textContent = c.name;
+  $('det-region').textContent = c.region;
+  $('det-cap').textContent = c.capital;
+  $('det-pop').textContent = c.pop;
+  $('det-lang').textContent = c.lang;
+  $('det-cur').textContent = c.cur;
+  $('det-fact-text').textContent = c.fact;
+  const m = S.mastery[c.id];
+  $('det-mpct').textContent = m + '%';
+  $('det-mbar').style.width = m + '%';
+}
+
+function startQuiz(){
+  const c = DATA.find(x => x.id === S.selected);
+  if (!c) return;
+  S.quizCountry = c; S.qIdx = 0; S.qAnswered = false;
+  $('detail').style.display = 'none';
+  $('quiz').classList.add('on');
+  renderQ();
+}
+
+function renderQ(){
+  const c = S.quizCountry;
+  const q = c.trivia[S.qIdx % c.trivia.length];
+  $('q-which').textContent = c.flag + ' ' + c.name;
+  $('q-num').textContent = 'Question ' + (S.qIdx + 1) + ' of ' + c.trivia.length;
+  $('q-text').textContent = q.q;
+  $('q-feed').textContent = '';
+  $('nxt-btn').style.display = 'none';
+  S.qAnswered = false;
+
+  // Shuffle options — correct answer identified by text match, not index
+  const shuffled = shuffle(q.opts);
+  const opts = $('q-opts');
+  opts.innerHTML = '';
+  shuffled.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'qopt';
+    btn.textContent = opt;
+    btn.onclick = () => answerQ(opt, q, btn, shuffled);
+    opts.appendChild(btn);
+  });
+}
+
+function answerQ(chosen, q, btn, shuffled){
+  if (S.qAnswered) return;
+  S.qAnswered = true;
+  document.querySelectorAll('.qopt').forEach(b => b.disabled = true);
+  const correct = chosen === q.a;
+  btn.classList.add(correct ? 'right' : 'wrong');
+  // Highlight the correct answer button
+  document.querySelectorAll('.qopt').forEach(b => {
+    if (b.textContent === q.a) b.classList.add('right');
+  });
+  if (correct) {
+    S.xp += 20; S.streak++;
+    S.mastery[S.quizCountry.id] = Math.min(100, S.mastery[S.quizCountry.id] + 34);
+    $('q-feed').textContent = '✅ Correct! ' + q.f;
+    toast('+' + (20 + (S.streak > 2 ? 10 : 0)) + ' XP' + (S.streak > 1 ? ' 🔥 ' + S.streak + ' streak!' : ''));
+  } else {
+    S.streak = 0;
+    $('q-feed').textContent = '❌ Not quite — ' + q.f;
+    toast('Keep going — the correct answer is highlighted green.');
+  }
+  if (S.qIdx + 1 < S.quizCountry.trivia.length) $('nxt-btn').style.display = 'block';
+  updateStats();
+  renderList();
+}
+
+function nextQ(){
+  S.qIdx++; S.qAnswered = false; renderQ();
+}
+
+function backToDetail(){
+  $('quiz').classList.remove('on');
+  const c = DATA.find(x => x.id === S.selected);
+  if (c) showDetail(c);
+}
+
+function goBack(){
+  $('detail').style.display = 'none';
+  showWelcome();
+}
+
+function showWelcome(){
+  $('detail').style.display = 'none';
+  $('quiz').classList.remove('on');
+  $('welcome').style.display = 'block';
+}
+
+function startDaily(){
+  const unmastered = DATA.filter(c => S.mastery[c.id] < 100);
+  if (!unmastered.length) { toast('🏆 You\'ve mastered all countries!'); return; }
+  const pick = unmastered[Math.floor(Math.random() * unmastered.length)];
+  S.selected = pick.id; S.explored.add(pick.id);
+  updateStats(); renderList();
+  S.quizCountry = pick; S.qIdx = 0;
+  $('detail').style.display = 'none';
+  $('welcome').style.display = 'none';
+  $('quiz').classList.add('on');
+  renderQ();
+  toast('⭐ Daily Quest: ' + pick.flag + ' ' + pick.name + '!');
+}
+
+function updateStats(){
+  const lvl = Math.floor(S.xp / 100) + 1;
+  $('xp-val').textContent = S.xp;
+  $('lvl-val').textContent = lvl;
+  $('streak-val').textContent = S.streak;
+  $('exp-val').textContent = S.explored.size;
+  $('xpbar').style.width = (S.xp % 100) + '%';
+}
+
+let tt;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(tt);
+  tt = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+renderList();
+</script>
